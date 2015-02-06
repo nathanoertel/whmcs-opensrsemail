@@ -1,0 +1,39 @@
+.moduleoutput .navbar {
+	text-align: left;
+}
+
+.table th.button-column {
+	width: 0;
+}
+.osrs-mailbox-management:before,
+.osrs-mailbox-management:after {
+	content: "";
+	display: table;
+}
+.osrs-mailbox-management:after {
+	clear: both;
+}
+.osrs-mailbox-management {
+	zoom: 1;
+}
+.osrs-mailbox-management .osrs-sidebar {
+	width: 200px;
+	float: left;
+}
+.osrs-mailbox-management .osrs-main-content {
+	width: 700px;
+	float: right;
+}
+
+.osrs-mailbox-management fieldset.multiple {
+	width: 50%;
+	float: left;
+}
+
+.osrs-mailbox-management .buttons {
+	clear: both;
+}
+
+.osrs-mailbox-management input[type='text'].small {
+	width: 100px;
+}
