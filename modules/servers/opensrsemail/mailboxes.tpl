@@ -1,34 +1,38 @@
 <style type="text/css">{$css}</style>
 <div class="navbar">
+	<a class="btn btn-info" href="http://mail.{$domain}" title="{$lang.logintowebmail}" target="_blank">{$lang.logintowebmail}</a>
+	<a class="btn btn-info" href="modules/servers/opensrsemail/Email_Client_Configuration.pdf" title="{$lang.setupinstructions}" target="_blank">{$lang.setupinstructions}</a>
+</div>
+<div class="navbar">
 	{if $addMailbox}
-		<a class="btn" href="clientarea.php?action=productdetails&id={$serviceid}&modop=custom&a=mailbox&type=mailbox" title="Add Mailbox">Add Mailbox</a>
+		<a class="btn btn-success" href="clientarea.php?action=productdetails&id={$serviceid}&modop=custom&a=mailbox&type=mailbox" title="{$lang.addmailbox}">{$lang.addmailbox}</a>
 	{else}
-		<a class="btn" href="upgrade.php?type=configoptions&id={$serviceid}" title="Add Mailbox">Add Mailbox</a>
+		<a class="btn btn-success" href="upgrade.php?type=configoptions&id={$serviceid}" title="{$lang.addmailbox}">{$lang.addmailbox}</a>
 	{/if}
 	{if $addForward}
-		<a class="btn" href="clientarea.php?action=productdetails&id={$serviceid}&modop=custom&a=mailbox&type=forward" title="Add Forwarding Mailbox">Add Forwarding Mailbox</a>
+		<a class="btn btn-success" href="clientarea.php?action=productdetails&id={$serviceid}&modop=custom&a=mailbox&type=forward" title="{$lang.addforward}">{$lang.addforward}</a>
 	{else}
-		<a class="btn" href="upgrade.php?type=configoptions&id={$serviceid}" title="Add Forwarding Mailbox">Add Forwarding Mailbox</a>
+		<a class="btn btn-success" href="upgrade.php?type=configoptions&id={$serviceid}" title="{$lang.addforward}">{$lang.addforward}</a>
 	{/if}
 	{if $addAlias}
-		<a class="btn" href="clientarea.php?action=productdetails&id={$serviceid}&modop=custom&a=mailbox&type=alias" title="Add Alias">Add Alias</a>
+		<a class="btn btn-success" href="clientarea.php?action=productdetails&id={$serviceid}&modop=custom&a=mailbox&type=alias" title="{$lang.addalias}">{$lang.addalias}</a>
 	{/if}
-	<a class="btn" href="clientarea.php?action=productdetails&id={$serviceid}&modaction=workgroups" title="Edit Workgroups">Edit Workgroups</a>
+	<a class="btn btn-primary" href="clientarea.php?action=productdetails&id={$serviceid}&modaction=workgroups" title="{$lang.editworkgroups}">{$lang.editworkgroups}</a>
 </div>
 {if $addedMailbox}
-	<p class="alert alert-success">The mailbox has been added successfully.</p>
+	<p class="alert alert-success">{$lang.mailboxaddsuccess}</p>
 {/if}
 {if $editedMailbox}
-	<p class="alert alert-success">The mailbox has been updated successfully.</p>
+	<p class="alert alert-success">{$lang.mailboxeditsuccess}</p>
 {/if}
 {if $deleteMailbox}
-	<p class="alert alert-error">You have more than the allowed number of mailboxes, either <a href="upgrade.php?type=configoptions&id={$serviceid}">add more mailboxes</a> to your account or remove mailboxes.</p>
+	<p class="alert alert-danger">{$lang.mailboxdeleterequired}</p>
 {/if}
 {if $deleteForward}
-	<p class="alert alert-error">You have more than the allowed number of forwards, either <a href="upgrade.php?type=configoptions&id={$serviceid}">add more mailboxes</a> to your account or remove forward mailboxes.</p>
+	<p class="alert alert-danger">{$lang.forwarddeleterequired}</p>
 {/if}
 {if $deleteSuccess}
-	<p class="alert alert-success">The mailbox was deleted succssfully.</p>
+	<p class="alert alert-success">{$lang.mailboxdeletesuccess}</p>
 {/if}
 {foreach from=$error item=error}
 	<p class="alert alert-error">{$error}</p>
@@ -37,9 +41,9 @@
 	<table class="table table-framed table-striped">
 		<thead>
 			<tr>
-				<th>Name</th>
-				<th>Type</th>
-				<th>Workgroup</th>
+				<th>{$lang.name}</th>
+				<th>{$lang.type}</th>
+				<th>{$lang.workgroup}</th>
 				<th class="button-column"></th>
 				<th class="button-column"></th>
 			</tr>
@@ -52,14 +56,14 @@
 					<td>{$mailbox.workgroup}</td>
 					<td>
 						{if $mailbox.type != "alias"}
-							<a class="btn" href="clientarea.php?action=productdetails&id={$serviceid}&modop=custom&a=mailbox&mailbox={$mailbox.mailbox}&workgroup={$mailbox.workgroup}&type={$mailbox.type}" title="Edit Mailbox">Edit</a>
+							<a class="btn btn-primary" href="clientarea.php?action=productdetails&id={$serviceid}&modop=custom&a=mailbox&mailbox={$mailbox.mailbox}&workgroup={$mailbox.workgroup}&type={$mailbox.type}" title="{$lang.edit}">{$lang.edit}</a>
 						{/if}
 					</td>
 					<td>
 						<form action="clientarea.php?action=productdetails&id={$serviceid}" method="post">
 							<input type="hidden" name="modaction" value="delete-mailbox" />
 							<input type="hidden" name="mailbox" value="{$mailbox.mailbox}" />
-							<input class="btn" type="submit" name="submit" value="Delete" title="Delete Mailbox" />
+							<input class="btn btn-danger" type="submit" name="submit" value="{$lang.delete}" title="{$lang.delete}" />
 						</form>
 					</td>
 				</tr>
@@ -67,5 +71,5 @@
 		</tbody>
 	</table>
 {else}
-	<div class="alert alert-info">There are no mailboxes</div>
+	<div class="alert alert-info">{$lang.nomailboxes}</div>
 {/if}

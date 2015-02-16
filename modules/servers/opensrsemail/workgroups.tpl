@@ -1,25 +1,25 @@
 <style type="text/css">{$css}</style>
 <div class="navbar">
-	<a class="btn" href="clientarea.php?action=productdetails&id={$serviceid}&modop=custom&a=mailbox&type=normal&modaction=workgroup" title="Add Workgroup">Add Workgroup</a>
-	<a class="btn" href="clientarea.php?action=productdetails&id={$serviceid}" title="Edit Workgroups">Edit Mailboxes</a>
+	<a class="btn btn-success" href="clientarea.php?action=productdetails&id={$serviceid}&modop=custom&a=mailbox&type=normal&modaction=workgroup" title="{$lang.addworkgroup}">{$lang.addworkgroup}</a>
+	<a class="btn btn-primary" href="clientarea.php?action=productdetails&id={$serviceid}" title="{$lang.editmailboxes}">{$lang.editmailboxes}</a>
 </div>
 {if $deleteSuccess}
-	<p class="alert alert-success">The workgroup was deleted succssfully.</p>
+	<p class="alert alert-success">{$lang.workgroupdeletesuccess}</p>
 {/if}
 {if $addSuccess}
-	<p class="alert alert-success">The workgroup was added succssfully.</p>
+	<p class="alert alert-success">{$lang.workgroupaddsuccess}</p>
 {/if}
 {foreach from=$error item=error}
-	<p class="alert alert-error">{$error}</p>
+	<p class="alert alert-danger">{$error}</p>
 {/foreach}
 {if count($workgroups)}
 	<table class="table table-framed table-striped">
 		<thead>
 			<tr>
-				<th>Name</th>
-				<th>Mailboxes</th>
-				<th>Forwards</th>
-				<th>Aliases</th>
+				<th>{$lang.name}</th>
+				<th>{$lang.mailboxes}</th>
+				<th>{$lang.forwards}</th>
+				<th>{$lang.aliases}</th>
 				<th class="button-column"></th>
 			</tr>
 		</thead>
@@ -35,7 +35,7 @@
 							<form action="clientarea.php?action=productdetails&id={$serviceid}&modaction=workgroups" method="post">
 								<input type="hidden" name="modaction" value="delete-workgroup" />
 								<input type="hidden" name="workgroup" value="{$workgroup.workgroup}" />
-								<input class="btn" type="submit" name="submit" value="Delete" title="Delete Workgroup" />
+								<input class="btn btn-danger" type="submit" name="submit" value="{$lang.delete}" title="{$lang.delete}" />
 							</form>	
 						{/if}
 					</td>
@@ -44,5 +44,5 @@
 		</tbody>
 	</table>
 {else}
-	<div class="alert alert-info">There are no mailboxes</div>
+	<div class="alert alert-info">{$lang.noworkgroups}</div>
 {/if}

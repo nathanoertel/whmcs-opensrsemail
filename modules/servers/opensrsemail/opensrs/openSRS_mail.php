@@ -379,18 +379,4 @@ class openSRS_mail {
 
 		return $result;
 	}
-	
-	public static function loadMethod($function, $username, $password, $domain, $cluster) {
-		
-		$className = "openSRS_mail".$function;
-		
-		if(class_exists($className)) {
-			return new $className($username, $password, $domain, $cluster);
-		} else if(file_exists(dirname(__FILE__)."/mail/mail".$function.".php")) {
-			require_once(dirname(__FILE__)."/mail/mail".$function.".php");
-			return new $className($username, $password, $domain, $cluster);
-		}
-		
-		throw new Exception("Unsupported Method");
-	}
 }

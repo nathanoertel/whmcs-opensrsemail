@@ -1,41 +1,32 @@
 <style type="text/css">{$css}</style>
-<div class="osrs-mailbox-management">
-	<div class="osrs-sidebar">
-		<ul class="osrs-menu">
-			<li class="back"><img class="osrs-image" src="modules/servers/opensrsemail/img/back.png"/> <a href="clientarea.php?action=productdetails&id={$serviceid}">Back To Mailboxes</a></li>
-		</ul>
-	</div>
-	<div class="osrs-main-content">
-		<h3>Add Alias</h3>
-		{foreach from=$error item=error}
-			<p class="alert alert-error">{$error}</p>
-		{/foreach}
-		<form action="clientarea.php?action=productdetails&id={$serviceid}&modop=custom&a=mailbox&type={$type}" class="form-stacked" method="post">
-			<input type="hidden" name="modaction" value="save-alias" />
-			<div>
-				<fieldset class="control-group">
-					<div class="control-group">
-						<label class="control-label" for="password">Alias</label>
-						<div class="control">
-							<input type="text" name="alias" value="{$alias}" />
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="workgroup">To Mailbox</label>
-						<div class="control">
-							<select name="mailbox">
-								{foreach from=$mailboxes item=mailbox}
-									<option value="{$mailbox.mailbox}">{$mailbox.mailbox}</option>
-								{/foreach}
-							</select>
-						</div>
-					</div>
-				</fieldset>
-				<div class="buttons">
-					<button class="btn" type="submit">Save</button>
-					<a href="clientarea.php?action=productdetails&id={$serviceid}">Cancel</a>
+<div class="page-header nav-header">
+	<h1>{$lang.addalias}</h1>
+</div>
+{foreach from=$error item=error}
+	<p class="alert alert-danger">{$error}</p>
+{/foreach}
+<form action="clientarea.php?action=productdetails&id={$serviceid}&modop=custom&a=mailbox&type={$type}" class="form-stacked" method="post">
+	<input type="hidden" name="modaction" value="save-alias" />
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="form-group">
+				<label class="control-label" for="alias">{$lang.aliasname}</label>
+				<div class="control">
+					<input class="form-control" type="text" name="alias" value="{$alias}" />
 				</div>
 			</div>
-		</form>
+			<div class="form-group">
+				<label class="control-label" for="mailbox">{$lang.mailboxname}</label>
+				<div class="control">
+					<select class="form-control" name="mailbox">
+						{foreach from=$mailboxes item=mailbox}
+							<option value="{$mailbox.mailbox}">{$mailbox.mailbox}</option>
+						{/foreach}
+					</select>
+				</div>
+			</div>
+		</div>
 	</div>
-</div>
+	<button class="btn btn-primary" type="submit">{$lang.save}</button>
+	<a class="btn btn-danger" href="clientarea.php?action=productdetails&id={$serviceid}">{$lang.cancel}</a>
+</form>

@@ -3,6 +3,10 @@ if (!class_exists('openSRS_mail')) {
     require_once dirname(__FILE__).DIRECTORY_SEPARATOR."opensrs".DIRECTORY_SEPARATOR."openSRS_mail.php";
 }
 
+/**
+ * Setup the config options
+ * @return array the configurations for the module
+ */
 function opensrsemail_ConfigOptions() {
 	$config = array(
 		"Username"	=> array("Type" => "text", "Size" => "20", "Description" => "Enter your company admin username here",),
@@ -15,6 +19,10 @@ function opensrsemail_ConfigOptions() {
 	return $config;
 }
 
+/**
+ * Add the custom buttons, default to adding a mailbox to allow the mailbox custom function
+ * @return array the custom functions
+ */
 function opensrsemail_ClientAreaCustomButtonArray() {
     $buttonarray = array(
 	 "Add Mailbox" => "mailbox",
@@ -22,6 +30,11 @@ function opensrsemail_ClientAreaCustomButtonArray() {
 	return $buttonarray;
 }
 
+/**
+ * Create the domain
+ * @param array $params the parameters for the request
+ * @return string the status of the domain creation
+ */
 function opensrsemail_CreateAccount($params) {
 	$openSRS = new openSRS_mail($params["configoption1"], $params["configoption2"], $params["configoption3"], $params["configoption4"], $params["configoption5"]);
 	
@@ -34,6 +47,11 @@ function opensrsemail_CreateAccount($params) {
 	}
 }
 
+/**
+ * Suspend the domain
+ * @param array $params the parameters for the request
+ * @return string the status of the suspension
+ */
 function opensrsemail_SuspendAccount($params) {
 	$openSRS = new openSRS_mail($params["configoption1"], $params["configoption2"], $params["configoption3"], $params["configoption4"], $params["configoption5"]);
 	
@@ -46,6 +64,11 @@ function opensrsemail_SuspendAccount($params) {
 	}
 }
 
+/**
+ * Unsuspend the domain
+ * @param array $params the parameters for the request
+ * @return string the status of the unsuspension
+ */
 function opensrsemail_UnsuspendAccount($params) {
 	$openSRS = new openSRS_mail($params["configoption1"], $params["configoption2"], $params["configoption3"], $params["configoption4"], $params["configoption5"]);
 	
@@ -58,6 +81,11 @@ function opensrsemail_UnsuspendAccount($params) {
 	}
 }
 
+/**
+ * Delete the domain
+ * @param array $params the parameters for the request
+ * @return string the status of the termination
+ */
 function opensrsemail_TerminateAccount($params) {
 	$openSRS = new openSRS_mail($params["configoption1"], $params["configoption2"], $params["configoption3"], $params["configoption4"], $params["configoption5"]);
 	try {
@@ -69,11 +97,18 @@ function opensrsemail_TerminateAccount($params) {
 	}
 }
 
+/**
+ * Display the client area
+ * @param array $params the parameters for the request
+ * @return array the output parameters to be displayed on the page
+ */
 function opensrsemail_ClientArea($params) {
 	if(!isset($_GET["modop"]) && !$_GET["modop"] == "custom") {
+		// standard request without any custom operation being called, load basic pages
 		$controller = new opensrsemail_Controller($params);
 		
 		if(isset($_POST["modaction"])) {
+			// process the posted action
 			if($_POST["modaction"] == "delete-workgroup") {
 				return $controller->deleteWorkgroup($params);
 			} else if($_POST["modaction"] == "delete-mailbox") {
@@ -87,14 +122,17 @@ function opensrsemail_ClientArea($params) {
 	}
 }
 
+/**
+ * Custom function for handling all mailbox actions
+ * @param array $params the parameters for the request
+ * @return array the output parameters to be displayed on the page
+ */
 function opensrsemail_mailbox($params) {
 	$controller = new opensrsemail_Controller($params);
 
 	if(!isset($_POST["modaction"])) {
-		if(isset($_GET["modaction"])) {
-			if($_GET["modaction"] == "workgroup") {
-				return $controller->addWorkgroup($params);
-			}
+		if(isset($_GET["modaction"]) && $_GET["modaction"] == "workgroup") {
+			return $controller->addWorkgroup($params);
 		}
 		
 		return $controller->addEditMailbox($params);
@@ -109,10 +147,35 @@ function opensrsemail_mailbox($params) {
 	}
 }
 
+/**
+ * Basic controller class to delegate all processing of requests and setup the required arrays for display or redirections
+ * @property array $vars the variables to be included in the template output
+ */
 class opensrsemail_Controller {
 	
+	/**
+	 * The OpenSRS mail class for completing operations
+	 * @var openSRS_mail $openSRS
+	 */
+	private $openSRS;
+	
+	/**
+	 * The variables to be displayed in the output
+	 * @var array $vars
+	 */
 	private $vars;
 	
+	/**
+	 * The languages for the current request
+	 * @var array $language
+	 */
+	private $language;
+	
+	/**
+	 * List the mailboxes for the active service
+	 * @param array $params the parameters for the request
+	 * @return array the template file and output for the mailbox list
+	 */
 	public function listMailboxes($params) {
 		$openSRS = new openSRS_mail($params["configoption1"], $params["configoption2"], $params["configoption3"], $params["configoption4"], $params["configoption5"]);
 		
@@ -147,12 +210,14 @@ class opensrsemail_Controller {
 			$this->vars["error"] = array("Communication error, please contact the administrator.");
 		}
 
-		return array(
-			'templatefile' => 'mailboxes',
-			'vars' => $this->vars
-		);
+		return $this->returnDisplay("mailboxes");
 	}
 	
+	/**
+	 * List the workgroups for the active service
+	 * @param array $params the parameters for the request
+	 * @return array the output vars and template for the list of workgroups
+	 */
 	public function listWorkgroups($params) {
 		$openSRS = new openSRS_mail($params["configoption1"], $params["configoption2"], $params["configoption3"], $params["configoption4"], $params["configoption5"]);
 		
@@ -173,16 +238,18 @@ class opensrsemail_Controller {
 			$this->vars["error"] = array("Communication error, please contact the administrator.");
 		}
 
-		return array(
-			'templatefile' => 'workgroups',
-			'vars' => $this->vars
-		);
+		return $this->returnDisplay("workgroups");
 	}
 	
+	/**
+	 * Add or edit a mailbox
+	 * @param array $params the parameters for the request
+	 * @return array the output vars and template for the adding or editing of mailboxes
+	 */
 	public function addEditMailbox($params) {
 		$openSRS = new openSRS_mail($params["configoption1"], $params["configoption2"], $params["configoption3"], $params["configoption4"], $params["configoption5"]);
 	
-		$type = $_GET["type"];
+		$type = isset($_GET["type"]) ? $_GET["type"] : "mailbox";
 		
 		$this->vars["type"] = $type;
 		
@@ -191,7 +258,7 @@ class opensrsemail_Controller {
 			
 			$this->vars["workgroups"] = isset($result["attributes"]["list"]) ? $result["attributes"]["list"] : array();
 
-			if($type == "mailbox") {
+			if($type == "mailbox" ) {
 				if(isset($_GET["mailbox"]) && !empty($_GET["mailbox"])) {
 					$result = $openSRS->getMailbox($params["domain"], $_GET["mailbox"]);
 	
@@ -275,8 +342,9 @@ class opensrsemail_Controller {
 				if($result["is_success"]) {
 					$mailboxes = isset($result["attributes"]["list"]) ? $result["attributes"]["list"] : array();
 	
-					foreach($mailboxes as $mailbox) {
-						$mailbox["type"] = ucwords($mailbox["type"]);
+					// remove any alias mailboxes since you can't alias to an alias
+					foreach($mailboxes as $offset => $mailbox) {
+						if($mailbox["type"] == "alias") unset($mailboxes[$offset]);
 					}
 					
 					$this->vars["mailboxes"] = $mailboxes;
@@ -289,12 +357,14 @@ class opensrsemail_Controller {
 			$this->vars["error"][] = "Communication error, please contact the administrator.";
 		}
 	
-		return array(
-			'templatefile' => $type,
-			'vars' => $this->vars
-		);
+		return $this->returnDisplay($type);
 	}
 	
+	/**
+	 * Add a workgroup
+	 * @param array $params the parameters for the request
+	 * @return array the vars and template for the workgroup addition page
+	 */
 	public function addWorkgroup($params) {
 		$openSRS = new openSRS_mail($params["configoption1"], $params["configoption2"], $params["configoption3"], $params["configoption4"], $params["configoption5"]);
 		
@@ -302,12 +372,14 @@ class opensrsemail_Controller {
 			"workgroup" => $this->getVar("workgroup")
 		);
 	
-		return array(
-			'templatefile' => 'workgroup',
-			'vars' => $this->vars
-		);
+		return $this->returnDisplay("workgroup");
 	}
 	
+	/**
+	 * Save a mailbox and either redirect the client or display the add/edit with errors
+	 * @param array $params the parameters for the request
+	 * @return array the vars and template for the mailbox adding/editing when there are errors saving
+	 */
 	public function saveMailbox($params) {
 		$openSRS = new openSRS_mail($params["configoption1"], $params["configoption2"], $params["configoption3"], $params["configoption4"], $params["configoption5"]);
 
@@ -396,6 +468,11 @@ class opensrsemail_Controller {
 		else return $this->addEditMailbox($params);
 	}
 	
+	/**
+	 * Save a forward and redirect the client on success or display the form with errors
+	 * @param array $params the parameters for the request
+	 * @return array the vars and template for the forward form when there are errors
+	 */
 	public function saveForward($params) {
 		$openSRS = new openSRS_mail($params["configoption1"], $params["configoption2"], $params["configoption3"], $params["configoption4"], $params["configoption5"]);
 
@@ -485,6 +562,11 @@ class opensrsemail_Controller {
 		else return $this->addEditMailbox($params);
 	}
 	
+	/**
+	 * Save the alias and redirect the client or display errors
+	 * @param array $params the parameters for the request
+	 * @return array the vars and template for the alias form when there are errors present
+	 */
 	public function saveAlias($params) {
 		$openSRS = new openSRS_mail($params["configoption1"], $params["configoption2"], $params["configoption3"], $params["configoption4"], $params["configoption5"]);
 
@@ -509,6 +591,11 @@ class opensrsemail_Controller {
 		else return $this->addEditMailbox($params);
 	}
 	
+	/**
+	 * Delete the given mailbox and return the mailbox list
+	 * @param array $params the parameters for the request
+	 * @return array the mailbox list with the status of the deletion
+	 */
 	public function deleteMailbox($params) {
 		$openSRS = new openSRS_mail($params["configoption1"], $params["configoption2"], $params["configoption3"], $params["configoption4"], $params["configoption5"]);
 
@@ -530,6 +617,11 @@ class opensrsemail_Controller {
 		return $this->listMailboxes($params);
 	}
 	
+	/**
+	 * Save the workgroup and redirect the user or display the form with errors
+	 * @param array $params the parameters for the request
+	 * @return array the vars and template for the form
+	 */
 	public function saveWorkgroup($params) {
 		$openSRS = new openSRS_mail($params["configoption1"], $params["configoption2"], $params["configoption3"], $params["configoption4"], $params["configoption5"]);
 
@@ -554,6 +646,11 @@ class opensrsemail_Controller {
 		else return $this->addWorkgroup($params);
 	}
 	
+	/**
+	 * Delete the given workgroup and display the list of workgroups
+	 * @param array $params the parameters for the request
+	 * @return array the vars and template for displaying the list of workgroups
+	 */
 	public function deleteWorkgroup($params) {
 		$openSRS = new openSRS_mail($params["configoption1"], $params["configoption2"], $params["configoption3"], $params["configoption4"], $params["configoption5"]);
 
@@ -575,15 +672,91 @@ class opensrsemail_Controller {
 		return $this->listWorkgroups($params);
 	}
 	
+	/**
+	 * Return the appropriate display with the given template and all vars setup with the language correctly retrieved for the given template
+	 * @param string $template the template to be used
+	 * @return array the correctly formatted array with all parameters for the given template
+	 */
+	private function returnDisplay($template) {
+		
+		// include all language files for the current client
+		foreach($this->language as $language) {
+			include(dirname(__FILE__)."/lang/".$language.".php");
+		}
+		
+		// if there are language entries for the current template, set them up
+		if(isset($lang[$template])) {
+			$language = $lang[$template];
+			
+			// look for any variables to place into the texts from the vars
+			foreach($language as $offset => $text) {
+				// use the same pattern as the template file for assigning variables
+				preg_match_all('/{\$([^}]*)}/', $text, $matches, PREG_SET_ORDER);
+				
+				foreach($matches as $match) {
+					if(isset($this->vars[$match[1]])) {
+						$language[$offset] = str_replace($match[0], $this->vars[$match[1]], $text);
+					}
+				}
+			}
+			
+			$this->vars["lang"] = $language;
+		}
+
+		return array(
+			'templatefile' => $template,
+			'vars' => $this->vars
+		);
+	}
+	
+	/**
+	 * Get the post variable for the given name if set otherwise an empty string
+	 * @param string $name the name of the post variable to get
+	 * @return string the value of the post variable if set or an empty string
+	 */
 	private function getVar($name) {
 		return isset($_POST[$name]) ? $_POST[$name] : "";
 	}
+	
+	private function getLanguage($template) {
+		$result = (string)$valueString;
+		
+		preg_match_all('/\${([^}]*)}/', $result, $matches, PREG_SET_ORDER);
+		
+		foreach($matches as $match) {
+			$result = str_replace($match[0], self::getConfiguration($match[1]), $result);
+		}
+		
+		return $result;
+	}
 
+	/**
+	 * Construct the controller setting up the basic necessary functions
+	 * @param array $params the parameters for the request
+	 */
 	public function __construct($params) {
+		// initialize the opensrs client
+		$this->openSRS = new openSRS_mail($params["configoption1"], $params["configoption2"], $params["configoption3"], $params["configoption4"], $params["configoption5"]);
+
+		// setup the basic parameters for all requests
 		$this->vars = $params;
 		if(file_exists(dirname(__FILE__)."/style.css")) {
 			$this->vars["css"] = file_get_contents(dirname(__FILE__)."/style.css");
 		} else $this->vars["css"] = "";
+		
+		// determine the language, defaulting to english but using teh session language and then the client language
+		$this->language = array();
+		
+		// load the default, english, then the client selected language, then the session language
+		// starting with the default working down the the session selected one allows all necessary items to be defined
+		// and then any overridden as you go through the other languages
+		$this->language[] = "english";
+		$this->language[] = $params["clientsdetails"]["language"];
+		if(isset($_SESSION["Language"])) $this->language[] = $_SESSION["Language"];
+		
+		foreach($this->language as $offset => $language) {
+			if(empty($language) || !file_exists(dirname(__FILE__)."/lang/".$language.".php")) unset($this->language[$offset]);
+		}
 	}
 }
 ?>
