@@ -37,4 +37,4 @@ At this point your customers will be able to purchase the service and choose the
 ##Common Problems
 
 - Communication error, please contact the administrator.
-  - Can be caused by port 51000 not being open.  Make sure that port is in your firewall in order to connect to OpenSRS
+  - Can be caused by port 51000 not being open.  Make sure that port is open in your firewall in order to connect to OpenSRS
