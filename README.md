@@ -33,3 +33,8 @@ The following functions are supported in the customer area:
 7. Assign that configurable option group to the product created in step 2.
 
 At this point your customers will be able to purchase the service and choose the number of mailboxes and forwards they would like to have.  They will also be able to adjust those quantities from the product management page.  They will be able to manage their mailboxes based on the quantities they have selected and only add mailboxes or forwards when they have avialility to otherwise they will be required to delete them.
+
+##Common Problems
+
+- Communication error, please contact the administrator.
+  - Can be caused by port 51000 not being open.  Make sure that port is in your firewall in order to connect to OpenSRS
