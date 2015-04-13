@@ -185,12 +185,11 @@ class openSRS_mail {
 	protected function makeCall ($sequence){
 		$result = '';
 		// Open the socket
-		error_log("ssl://admin.".$this->cluster.".hostedemail.com");
-		// $fp = fsockopen ($this->osrs_host, $this->osrs_port, $errno, $errstr, $this->osrs_portwait);
 		$fp = pfsockopen ("ssl://admin.".$this->cluster.".hostedemail.com", "4449", $errno, $errstr, "10");
 
 		if (!$fp) {
 			throw new Exception("Error connecting to OpenSRS");			// Something went wrong
+			error_log("OpenSRS Email - Socket Open Failed: ".$errno." - ".$errstr);
 		} else {
 			// Send commands to APP server
 			for ($i=0; $i<count($sequence); $i++){
@@ -199,13 +198,17 @@ class openSRS_mail {
 				// Write the port
 				$writeStr = $sequence[$i] ."\r\n";
 				$fwrite = fwrite($fp, $writeStr);
-				if (!$fwrite) 
+				if (!$fwrite) {
+					error_log("OpenSRS Email - Failed writing to socket");
 					throw new Exception("Error connecting to OpenSRS");			// Something went wrong
+				}
 
 				$dotStr = ".\r\n";
 				$fwrite = fwrite($fp, $dotStr);
-				if (!$fwrite)
+				if (!$fwrite) {
+					error_log("OpenSRS Email - Failed writing to socket");
 					throw new Exception("Error connecting to OpenSRS");			// Something went wrong
+				}
 								
 							// read the port rightaway
 				// Last line of command has be done with different type of reading
