@@ -9,7 +9,7 @@ if (!class_exists('openSRS_mail')) {
  */
 function opensrsemail_ConfigOptions() {
 	$config = array(
-		"Username"	=> array("Type" => "text", "Size" => "20", "Description" => "Enter your company admin username here",),
+		"Username"	=> array("Type" => "text", "Size" => "20", "Description" => "Enter your company admin username here, exclude the @domain portion",),
 		"Password"	=> array("Type" => "password", "Size" => "32", "Description" => "Enter your company admin password here",),
 		"Domain"	=> array("Type" => "text", "Size" => "32", "Description" => "Enter your company admin domain here",),
 		"Cluster"	=> array("Type" => "dropdown", "Options" => "A,B", "Description" => "Select the cluster associated with your account",),
