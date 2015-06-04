@@ -464,7 +464,7 @@ class opensrsemail_Controller {
 			}
 		}
 		
-		if($success) header("Location: /clientarea.php?action=productdetails&id=".$params["serviceid"].$success);
+		if($success) header("Location: clientarea.php?action=productdetails&id=".$params["serviceid"].$success);
 		else return $this->addEditMailbox($params);
 	}
 	
@@ -558,7 +558,7 @@ class opensrsemail_Controller {
 			}
 		}
 		
-		if($success) header("Location: /clientarea.php?action=productdetails&id=".$params["serviceid"].$success);
+		if($success) header("Location: clientarea.php?action=productdetails&id=".$params["serviceid"].$success);
 		else return $this->addEditMailbox($params);
 	}
 	
@@ -587,7 +587,7 @@ class opensrsemail_Controller {
 			}
 		}
 		
-		if($success) header("Location: /clientarea.php?action=productdetails&id=".$params["serviceid"]."&added=true");
+		if($success) header("Location: clientarea.php?action=productdetails&id=".$params["serviceid"]."&added=true");
 		else return $this->addEditMailbox($params);
 	}
 	
@@ -642,7 +642,7 @@ class opensrsemail_Controller {
 			}
 		}
 		
-		if($success) header("Location: /clientarea.php?action=productdetails&id=".$params["serviceid"]."&modaction=workgroups&added=true");
+		if($success) header("Location: clientarea.php?action=productdetails&id=".$params["serviceid"]."&modaction=workgroups&added=true");
 		else return $this->addWorkgroup($params);
 	}
 	
