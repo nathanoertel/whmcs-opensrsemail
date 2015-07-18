@@ -9,8 +9,8 @@
 {if $deleteRequired}
 	<p class="alert alert-danger">{$lang.deleterequired}</p>
 {else}
-	{foreach from=$error item=error}
-		<p class="alert alert-danger">{$error}</p>
+	{foreach from=$error item=e}
+		<p class="alert alert-danger">{$e}</p>
 	{/foreach}
 	{if $mailbox}
 		<form action="clientarea.php?action=productdetails&id={$serviceid}&modop=custom&a=mailbox{if !$new}&mailbox={$mailbox.mailbox}&workgroup={$workgroup}{/if}&type={$type}" class="form-stacked" method="post">

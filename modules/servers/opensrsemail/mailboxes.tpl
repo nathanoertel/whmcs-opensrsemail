@@ -34,8 +34,8 @@
 {if $deleteSuccess}
 	<p class="alert alert-success">{$lang.mailboxdeletesuccess}</p>
 {/if}
-{foreach from=$error item=error}
-	<p class="alert alert-error">{$error}</p>
+{foreach from=$error item=e}
+	<p class="alert alert-danger">{$e}</p>
 {/foreach}
 {if count($mailboxes)}
 	<table class="table table-framed table-striped">
